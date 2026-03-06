@@ -2892,24 +2892,63 @@ let EventDialog = class extends i$3 {
       startDt = `${this._startDate}T${this._startTime}:00`;
       endDt = `${this._endDate}T${this._endTime}:00`;
     }
-    const data = {
-      summary: this._title.trim(),
-      description: this._description || void 0,
-      location: this._location || void 0,
-      start_date_time: this._allDay ? void 0 : startDt,
-      end_date_time: this._allDay ? void 0 : endDt,
-      start_date: this._allDay ? startDt : void 0,
-      end_date: this._allDay ? endDt : void 0
-    };
     try {
       if (isEdit && this.state.event) {
-        data.uid = this.state.event.uid;
-        if (this.state.event.recurringEventId) {
-          data.recurrence_id = this.state.event.recurrenceId;
+        const wsPayload = {
+          type: "calendar/event/update",
+          entity_id: entityId,
+          uid: this.state.event.uid,
+          event: {
+            summary: this._title.trim(),
+            description: this._description || void 0,
+            location: this._location || void 0,
+            ...this._allDay ? { start: { date: startDt }, end: { date: endDt } } : { start: { dateTime: startDt }, end: { dateTime: endDt } }
+          }
+        };
+        if (this.state.event.recurrenceId) wsPayload.recurrence_id = this.state.event.recurrenceId;
+        try {
+          await this.hass.connection.sendMessagePromise(wsPayload);
+        } catch {
+          const data = {
+            entity_id: entityId,
+            uid: this.state.event.uid,
+            summary: this._title.trim(),
+            description: this._description || void 0,
+            location: this._location || void 0,
+            start_date_time: this._allDay ? void 0 : startDt,
+            end_date_time: this._allDay ? void 0 : endDt,
+            start_date: this._allDay ? startDt : void 0,
+            end_date: this._allDay ? endDt : void 0
+          };
+          if (this.state.event.recurrenceId) data.recurrence_id = this.state.event.recurrenceId;
+          await this.hass.callService("calendar", "update_event", data);
         }
-        await this.hass.callService("calendar", "update_event", data, { entity_id: entityId });
       } else {
-        await this.hass.callService("calendar", "create_event", data, { entity_id: entityId });
+        const wsPayload = {
+          type: "calendar/event/create",
+          entity_id: entityId,
+          event: {
+            summary: this._title.trim(),
+            description: this._description || void 0,
+            location: this._location || void 0,
+            ...this._allDay ? { start: { date: startDt }, end: { date: endDt } } : { start: { dateTime: startDt }, end: { dateTime: endDt } }
+          }
+        };
+        try {
+          await this.hass.connection.sendMessagePromise(wsPayload);
+        } catch {
+          const data = {
+            entity_id: entityId,
+            summary: this._title.trim(),
+            description: this._description || void 0,
+            location: this._location || void 0,
+            start_date_time: this._allDay ? void 0 : startDt,
+            end_date_time: this._allDay ? void 0 : endDt,
+            start_date: this._allDay ? startDt : void 0,
+            end_date: this._allDay ? endDt : void 0
+          };
+          await this.hass.callService("calendar", "create_event", data);
+        }
       }
       this.dispatchEvent(new CustomEvent("saved", { detail: { entityId } }));
       this._close();
@@ -2922,15 +2961,23 @@ let EventDialog = class extends i$3 {
   async _delete() {
     if (!this.state.event) return;
     this._deleting = true;
+    const entityId = this.state.event.entityId;
+    const uid = this.state.event.uid;
+    const recurrenceId = this.state.event.recurrenceId;
     try {
-      const entityId = this.state.event.entityId;
-      const data = {
-        uid: this.state.event.uid
+      const wsPayload = {
+        type: "calendar/event/delete",
+        entity_id: entityId,
+        uid
       };
-      if (this.state.event.recurrenceId) {
-        data.recurrence_id = this.state.event.recurrenceId;
+      if (recurrenceId) wsPayload.recurrence_id = recurrenceId;
+      try {
+        await this.hass.connection.sendMessagePromise(wsPayload);
+      } catch {
+        const data = { entity_id: entityId, uid };
+        if (recurrenceId) data.recurrence_id = recurrenceId;
+        await this.hass.callService("calendar", "delete_event", data);
       }
-      await this.hass.callService("calendar", "delete_event", data, { entity_id: entityId });
       this.dispatchEvent(new CustomEvent("saved", { detail: { entityId } }));
       this._close();
     } catch (e2) {

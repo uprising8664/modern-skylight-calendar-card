@@ -7,7 +7,7 @@ export interface HomeAssistant {
   connection: HassConnection;
   callWS<T>(params: object): Promise<T>;
   callApi<T>(method: string, path: string, parameters?: object): Promise<T>;
-  callService(domain: string, service: string, data?: object, target?: object): Promise<void>;
+  callService(domain: string, service: string, data?: object): Promise<void>;
 }
 
 export interface HassEntity {

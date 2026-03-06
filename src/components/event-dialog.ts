@@ -95,26 +95,75 @@ export class EventDialog extends LitElement {
       endDt = `${this._endDate}T${this._endTime}:00`;
     }
 
-    const data: Record<string, unknown> = {
-      summary: this._title.trim(),
-      description: this._description || undefined,
-      location: this._location || undefined,
-      start_date_time: this._allDay ? undefined : startDt,
-      end_date_time: this._allDay ? undefined : endDt,
-      start_date: this._allDay ? startDt : undefined,
-      end_date: this._allDay ? endDt : undefined,
-    };
-
     try {
       if (isEdit && this.state.event) {
-        data.uid = this.state.event.uid;
-        if (this.state.event.recurringEventId) {
-          data.recurrence_id = this.state.event.recurrenceId;
+        // Try WebSocket API first (works for Google Calendar)
+        const wsPayload: Record<string, unknown> = {
+          type: 'calendar/event/update',
+          entity_id: entityId,
+          uid: this.state.event.uid,
+          event: {
+            summary: this._title.trim(),
+            description: this._description || undefined,
+            location: this._location || undefined,
+            ...(this._allDay
+              ? { start: { date: startDt }, end: { date: endDt } }
+              : { start: { dateTime: startDt }, end: { dateTime: endDt } }),
+          },
+        };
+        if (this.state.event.recurrenceId) wsPayload.recurrence_id = this.state.event.recurrenceId;
+
+        try {
+          await this.hass.connection.sendMessagePromise(wsPayload);
+        } catch {
+          // Fallback to service call
+          const data: Record<string, unknown> = {
+            entity_id: entityId,
+            uid: this.state.event.uid,
+            summary: this._title.trim(),
+            description: this._description || undefined,
+            location: this._location || undefined,
+            start_date_time: this._allDay ? undefined : startDt,
+            end_date_time: this._allDay ? undefined : endDt,
+            start_date: this._allDay ? startDt : undefined,
+            end_date: this._allDay ? endDt : undefined,
+          };
+          if (this.state.event.recurrenceId) data.recurrence_id = this.state.event.recurrenceId;
+          await this.hass.callService('calendar', 'update_event', data);
         }
-        await (this.hass as any).callService('calendar', 'update_event', data, { entity_id: entityId });
       } else {
-        await (this.hass as any).callService('calendar', 'create_event', data, { entity_id: entityId });
+        // Try WebSocket API first
+        const wsPayload: Record<string, unknown> = {
+          type: 'calendar/event/create',
+          entity_id: entityId,
+          event: {
+            summary: this._title.trim(),
+            description: this._description || undefined,
+            location: this._location || undefined,
+            ...(this._allDay
+              ? { start: { date: startDt }, end: { date: endDt } }
+              : { start: { dateTime: startDt }, end: { dateTime: endDt } }),
+          },
+        };
+
+        try {
+          await this.hass.connection.sendMessagePromise(wsPayload);
+        } catch {
+          // Fallback to service call
+          const data: Record<string, unknown> = {
+            entity_id: entityId,
+            summary: this._title.trim(),
+            description: this._description || undefined,
+            location: this._location || undefined,
+            start_date_time: this._allDay ? undefined : startDt,
+            end_date_time: this._allDay ? undefined : endDt,
+            start_date: this._allDay ? startDt : undefined,
+            end_date: this._allDay ? endDt : undefined,
+          };
+          await this.hass.callService('calendar', 'create_event', data);
+        }
       }
+
       this.dispatchEvent(new CustomEvent('saved', { detail: { entityId } }));
       this._close();
     } catch (e) {
@@ -127,16 +176,28 @@ export class EventDialog extends LitElement {
   private async _delete() {
     if (!this.state.event) return;
     this._deleting = true;
+    const entityId = this.state.event.entityId;
+    const uid = this.state.event.uid;
+    const recurrenceId = this.state.event.recurrenceId;
+
     try {
-      const entityId = this.state.event.entityId;
-      const data: Record<string, unknown> = {
-        uid: this.state.event.uid,
+      // Try WebSocket API first (works for Google Calendar)
+      const wsPayload: Record<string, unknown> = {
+        type: 'calendar/event/delete',
+        entity_id: entityId,
+        uid,
       };
-      if (this.state.event.recurrenceId) {
-        data.recurrence_id = this.state.event.recurrenceId;
+      if (recurrenceId) wsPayload.recurrence_id = recurrenceId;
+
+      try {
+        await this.hass.connection.sendMessagePromise(wsPayload);
+      } catch {
+        // Fallback to service call
+        const data: Record<string, unknown> = { entity_id: entityId, uid };
+        if (recurrenceId) data.recurrence_id = recurrenceId;
+        await this.hass.callService('calendar', 'delete_event', data);
       }
-      // HA 2022.7+ uses target selector instead of entity_id in data
-      await (this.hass as any).callService('calendar', 'delete_event', data, { entity_id: entityId });
+
       this.dispatchEvent(new CustomEvent('saved', { detail: { entityId } }));
       this._close();
     } catch (e) {
