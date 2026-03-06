@@ -3198,11 +3198,37 @@ let ModernSkylightCalendarCard = class extends i$3 {
     const canManage = this._config?.enable_event_management ?? true;
     return b`
       <div class="header">
-        <!-- Top row: title (left) + actions (right) -->
+        <!-- Top row: Title (left), Period + Nav + Add (right) -->
         <div class="header-top">
           ${title ? b`<h1 class="header-title">${title}</h1>` : A}
 
-          <div class="header-right-actions" style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: flex-end;">
+          <div class="header-actions" style="gap: 16px;">
+            <span class="header-period"
+              @click=${() => this._goToday()}
+              title="Go to today"
+              style="cursor: pointer;"
+            >${periodLabel}</span>
+
+            <div class="nav-group">
+              <button class="nav-btn" @click=${() => this._navigate(-1)} title="Previous">‹</button>
+              <button class="today-btn" @click=${() => this._goToday()}>Today</button>
+              <button class="nav-btn" @click=${() => this._navigate(1)} title="Next">›</button>
+            </div>
+
+            ${canManage ? b`
+              <button class="btn btn-primary icon-only" title="New event"
+                @click=${() => this._openAddDialog()}>+</button>
+            ` : A}
+          </div>
+        </div>
+
+        ${!compact ? b`
+          <!-- Bottom row: Badges (left), View Switcher (right) -->
+          <div class="header-bottom">
+            <div class="calendar-badges">
+              ${entities.map((ent) => this._renderBadge(ent))}
+            </div>
+
             <div class="view-switcher">
               ${["month", "week", "list"].map((v2) => b`
                 <button
@@ -3210,34 +3236,6 @@ let ModernSkylightCalendarCard = class extends i$3 {
                   @click=${() => this._switchView(v2)}
                 >${this._viewLabel(v2)}</button>
               `)}
-            </div>
-
-            <span class="header-period"
-              @click=${() => this._goToday()}
-              title="Go to today"
-              style="cursor: pointer;"
-            >${periodLabel}</span>
-
-            <div class="header-actions">
-              <div class="nav-group">
-                <button class="nav-btn" @click=${() => this._navigate(-1)} title="Previous">‹</button>
-                <button class="today-btn" @click=${() => this._goToday()}>Today</button>
-                <button class="nav-btn" @click=${() => this._navigate(1)} title="Next">›</button>
-              </div>
-
-              ${canManage ? b`
-                <button class="btn btn-primary icon-only" title="New event"
-                  @click=${() => this._openAddDialog()}>+</button>
-              ` : A}
-            </div>
-          </div>
-        </div>
-
-        ${!compact ? b`
-          <!-- Bottom row: calendar badges -->
-          <div class="header-bottom" style="justify-content: flex-end;">
-            <div class="calendar-badges">
-              ${entities.map((ent) => this._renderBadge(ent))}
             </div>
           </div>
         ` : A}

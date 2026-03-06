@@ -160,11 +160,37 @@ export class ModernSkylightCalendarCard extends LitElement {
 
     return html`
       <div class="header">
-        <!-- Top row: title (left) + actions (right) -->
+        <!-- Top row: Title (left), Period + Nav + Add (right) -->
         <div class="header-top">
           ${title ? html`<h1 class="header-title">${title}</h1>` : nothing}
 
-          <div class="header-right-actions" style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: flex-end;">
+          <div class="header-actions" style="gap: 16px;">
+            <span class="header-period"
+              @click=${() => this._goToday()}
+              title="Go to today"
+              style="cursor: pointer;"
+            >${periodLabel}</span>
+
+            <div class="nav-group">
+              <button class="nav-btn" @click=${() => this._navigate(-1)} title="Previous">‹</button>
+              <button class="today-btn" @click=${() => this._goToday()}>Today</button>
+              <button class="nav-btn" @click=${() => this._navigate(1)} title="Next">›</button>
+            </div>
+
+            ${canManage ? html`
+              <button class="btn btn-primary icon-only" title="New event"
+                @click=${() => this._openAddDialog()}>+</button>
+            ` : nothing}
+          </div>
+        </div>
+
+        ${!compact ? html`
+          <!-- Bottom row: Badges (left), View Switcher (right) -->
+          <div class="header-bottom">
+            <div class="calendar-badges">
+              ${entities.map(ent => this._renderBadge(ent))}
+            </div>
+
             <div class="view-switcher">
               ${(['month', 'week', 'list'] as ViewMode[]).map(v => html`
                 <button
@@ -172,34 +198,6 @@ export class ModernSkylightCalendarCard extends LitElement {
                   @click=${() => this._switchView(v)}
                 >${this._viewLabel(v)}</button>
               `)}
-            </div>
-
-            <span class="header-period"
-              @click=${() => this._goToday()}
-              title="Go to today"
-              style="cursor: pointer;"
-            >${periodLabel}</span>
-
-            <div class="header-actions">
-              <div class="nav-group">
-                <button class="nav-btn" @click=${() => this._navigate(-1)} title="Previous">‹</button>
-                <button class="today-btn" @click=${() => this._goToday()}>Today</button>
-                <button class="nav-btn" @click=${() => this._navigate(1)} title="Next">›</button>
-              </div>
-
-              ${canManage ? html`
-                <button class="btn btn-primary icon-only" title="New event"
-                  @click=${() => this._openAddDialog()}>+</button>
-              ` : nothing}
-            </div>
-          </div>
-        </div>
-
-        ${!compact ? html`
-          <!-- Bottom row: calendar badges -->
-          <div class="header-bottom" style="justify-content: flex-end;">
-            <div class="calendar-badges">
-              ${entities.map(ent => this._renderBadge(ent))}
             </div>
           </div>
         ` : nothing}
