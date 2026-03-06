@@ -170,6 +170,15 @@ export class ModernSkylightCalendarCard extends LitElement {
           >${periodLabel}</span>
 
           <div class="header-actions">
+            <div class="view-switcher">
+              ${(['month', 'week', 'list'] as ViewMode[]).map(v => html`
+                <button
+                  class="btn ${this._view === v ? 'active' : ''}"
+                  @click=${() => this._switchView(v)}
+                >${this._viewLabel(v)}</button>
+              `)}
+            </div>
+
             <div class="nav-group">
               <button class="nav-btn" @click=${() => this._navigate(-1)} title="Previous">‹</button>
               <button class="today-btn" @click=${() => this._goToday()}>Today</button>
@@ -184,17 +193,8 @@ export class ModernSkylightCalendarCard extends LitElement {
         </div>
 
         ${!compact ? html`
-          <!-- Bottom row: view switcher + calendar badges -->
-          <div class="header-bottom">
-            <div class="view-switcher">
-              ${(['month', 'week', 'list'] as ViewMode[]).map(v => html`
-                <button
-                  class="btn ${this._view === v ? 'active' : ''}"
-                  @click=${() => this._switchView(v)}
-                >${this._viewLabel(v)}</button>
-              `)}
-            </div>
-
+          <!-- Bottom row: calendar badges -->
+          <div class="header-bottom" style="justify-content: flex-end;">
             <div class="calendar-badges">
               ${entities.map(ent => this._renderBadge(ent))}
             </div>

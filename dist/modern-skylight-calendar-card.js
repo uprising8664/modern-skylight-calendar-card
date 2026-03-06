@@ -535,8 +535,13 @@ function r(r2) {
   return n$1({ ...r2, state: true, attribute: false });
 }
 const baseStyles = i$6`
-  /* ── Design tokens ─────────────────────────────────────────────────────── */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
   :host {
+    display: block;
+    width: 100%;
     /* Surfaces */
     --msc-bg:           #0f0f13;
     --msc-surface:      #1a1a24;
@@ -1018,6 +1023,7 @@ const baseStyles = i$6`
 
   .week-hour-row {
     height: 48px;
+    box-sizing: border-box;
     border-bottom: 1px solid var(--msc-border);
     position: relative;
   }
@@ -3202,6 +3208,15 @@ let ModernSkylightCalendarCard = class extends i$3 {
           >${periodLabel}</span>
 
           <div class="header-actions">
+            <div class="view-switcher">
+              ${["month", "week", "list"].map((v2) => b`
+                <button
+                  class="btn ${this._view === v2 ? "active" : ""}"
+                  @click=${() => this._switchView(v2)}
+                >${this._viewLabel(v2)}</button>
+              `)}
+            </div>
+
             <div class="nav-group">
               <button class="nav-btn" @click=${() => this._navigate(-1)} title="Previous">‹</button>
               <button class="today-btn" @click=${() => this._goToday()}>Today</button>
@@ -3216,17 +3231,8 @@ let ModernSkylightCalendarCard = class extends i$3 {
         </div>
 
         ${!compact ? b`
-          <!-- Bottom row: view switcher + calendar badges -->
-          <div class="header-bottom">
-            <div class="view-switcher">
-              ${["month", "week", "list"].map((v2) => b`
-                <button
-                  class="btn ${this._view === v2 ? "active" : ""}"
-                  @click=${() => this._switchView(v2)}
-                >${this._viewLabel(v2)}</button>
-              `)}
-            </div>
-
+          <!-- Bottom row: calendar badges -->
+          <div class="header-bottom" style="justify-content: flex-end;">
             <div class="calendar-badges">
               ${entities.map((ent) => this._renderBadge(ent))}
             </div>

@@ -1,8 +1,13 @@
 import { css } from 'lit';
 
 export const baseStyles = css`
-  /* ── Design tokens ─────────────────────────────────────────────────────── */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
   :host {
+    display: block;
+    width: 100%;
     /* Surfaces */
     --msc-bg:           #0f0f13;
     --msc-surface:      #1a1a24;
@@ -484,6 +489,7 @@ export const baseStyles = css`
 
   .week-hour-row {
     height: 48px;
+    box-sizing: border-box;
     border-bottom: 1px solid var(--msc-border);
     position: relative;
   }
