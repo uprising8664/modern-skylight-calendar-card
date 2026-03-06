@@ -542,6 +542,7 @@ const baseStyles = i$6`
   :host {
     display: block;
     width: 100%;
+    height: 100%;
     /* Surfaces */
     --msc-bg:           #0f0f13;
     --msc-surface:      #1a1a24;
@@ -820,6 +821,11 @@ const baseStyles = i$6`
     flex: 1;
     overflow: hidden;
     position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .calendar-body > :not(.loading-overlay) {
+    flex: 1;
   }
 
   /* ── Day headers row ───────────────────────────────────────────────────── */
@@ -846,7 +852,7 @@ const baseStyles = i$6`
     grid-auto-rows: minmax(80px, 1fr);
     gap: 1px;
     background: var(--msc-border);
-    height: 100%;
+    flex: 1;
     overflow-y: auto;
   }
 
