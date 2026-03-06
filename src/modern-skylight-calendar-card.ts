@@ -160,16 +160,11 @@ export class ModernSkylightCalendarCard extends LitElement {
 
     return html`
       <div class="header">
-        <!-- Top row: title + period + nav + add button -->
+        <!-- Top row: title (left) + actions (right) -->
         <div class="header-top">
           ${title ? html`<h1 class="header-title">${title}</h1>` : nothing}
 
-          <span class="header-period"
-            @click=${() => this._goToday()}
-            title="Go to today"
-          >${periodLabel}</span>
-
-          <div class="header-actions">
+          <div class="header-right-actions" style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: flex-end;">
             <div class="view-switcher">
               ${(['month', 'week', 'list'] as ViewMode[]).map(v => html`
                 <button
@@ -179,16 +174,24 @@ export class ModernSkylightCalendarCard extends LitElement {
               `)}
             </div>
 
-            <div class="nav-group">
-              <button class="nav-btn" @click=${() => this._navigate(-1)} title="Previous">‹</button>
-              <button class="today-btn" @click=${() => this._goToday()}>Today</button>
-              <button class="nav-btn" @click=${() => this._navigate(1)} title="Next">›</button>
-            </div>
+            <span class="header-period"
+              @click=${() => this._goToday()}
+              title="Go to today"
+              style="cursor: pointer;"
+            >${periodLabel}</span>
 
-            ${canManage ? html`
-              <button class="btn btn-primary icon-only" title="New event"
-                @click=${() => this._openAddDialog()}>+</button>
-            ` : nothing}
+            <div class="header-actions">
+              <div class="nav-group">
+                <button class="nav-btn" @click=${() => this._navigate(-1)} title="Previous">‹</button>
+                <button class="today-btn" @click=${() => this._goToday()}>Today</button>
+                <button class="nav-btn" @click=${() => this._navigate(1)} title="Next">›</button>
+              </div>
+
+              ${canManage ? html`
+                <button class="btn btn-primary icon-only" title="New event"
+                  @click=${() => this._openAddDialog()}>+</button>
+              ` : nothing}
+            </div>
           </div>
         </div>
 

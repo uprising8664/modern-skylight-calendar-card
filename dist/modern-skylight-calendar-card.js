@@ -3198,16 +3198,11 @@ let ModernSkylightCalendarCard = class extends i$3 {
     const canManage = this._config?.enable_event_management ?? true;
     return b`
       <div class="header">
-        <!-- Top row: title + period + nav + add button -->
+        <!-- Top row: title (left) + actions (right) -->
         <div class="header-top">
           ${title ? b`<h1 class="header-title">${title}</h1>` : A}
 
-          <span class="header-period"
-            @click=${() => this._goToday()}
-            title="Go to today"
-          >${periodLabel}</span>
-
-          <div class="header-actions">
+          <div class="header-right-actions" style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: flex-end;">
             <div class="view-switcher">
               ${["month", "week", "list"].map((v2) => b`
                 <button
@@ -3217,16 +3212,24 @@ let ModernSkylightCalendarCard = class extends i$3 {
               `)}
             </div>
 
-            <div class="nav-group">
-              <button class="nav-btn" @click=${() => this._navigate(-1)} title="Previous">‹</button>
-              <button class="today-btn" @click=${() => this._goToday()}>Today</button>
-              <button class="nav-btn" @click=${() => this._navigate(1)} title="Next">›</button>
-            </div>
+            <span class="header-period"
+              @click=${() => this._goToday()}
+              title="Go to today"
+              style="cursor: pointer;"
+            >${periodLabel}</span>
 
-            ${canManage ? b`
-              <button class="btn btn-primary icon-only" title="New event"
-                @click=${() => this._openAddDialog()}>+</button>
-            ` : A}
+            <div class="header-actions">
+              <div class="nav-group">
+                <button class="nav-btn" @click=${() => this._navigate(-1)} title="Previous">‹</button>
+                <button class="today-btn" @click=${() => this._goToday()}>Today</button>
+                <button class="nav-btn" @click=${() => this._navigate(1)} title="Next">›</button>
+              </div>
+
+              ${canManage ? b`
+                <button class="btn btn-primary icon-only" title="New event"
+                  @click=${() => this._openAddDialog()}>+</button>
+              ` : A}
+            </div>
           </div>
         </div>
 
