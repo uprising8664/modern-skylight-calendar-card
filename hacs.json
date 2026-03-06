@@ -1,6 +1,5 @@
 {
   "name": "Modern Skylight Calendar Card",
-  "description": "A sleek, neon-themed, flicker-free Lovelace calendar card. Month, Week, and List views with real-time Google Calendar updates via webhook and polling fallback.",
   "render_readme": true,
-  "content_in_root": true
+  "filename": "modern-skylight-calendar-card.js"
 }
