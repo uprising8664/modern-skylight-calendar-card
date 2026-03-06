@@ -96,7 +96,6 @@ export class EventDialog extends LitElement {
     }
 
     const data: Record<string, unknown> = {
-      entity_id: entityId,
       summary: this._title.trim(),
       description: this._description || undefined,
       location: this._location || undefined,
@@ -112,9 +111,9 @@ export class EventDialog extends LitElement {
         if (this.state.event.recurringEventId) {
           data.recurrence_id = this.state.event.recurrenceId;
         }
-        await this.hass.callService('calendar', 'update_event', data);
+        await (this.hass as any).callService('calendar', 'update_event', data, { entity_id: entityId });
       } else {
-        await this.hass.callService('calendar', 'create_event', data);
+        await (this.hass as any).callService('calendar', 'create_event', data, { entity_id: entityId });
       }
       this.dispatchEvent(new CustomEvent('saved', { detail: { entityId } }));
       this._close();
@@ -129,12 +128,16 @@ export class EventDialog extends LitElement {
     if (!this.state.event) return;
     this._deleting = true;
     try {
-      await this.hass.callService('calendar', 'delete_event', {
-        entity_id: this.state.event.entityId,
+      const entityId = this.state.event.entityId;
+      const data: Record<string, unknown> = {
         uid: this.state.event.uid,
-        recurrence_id: this.state.event.recurrenceId,
-      });
-      this.dispatchEvent(new CustomEvent('saved', { detail: { entityId: this.state.event.entityId } }));
+      };
+      if (this.state.event.recurrenceId) {
+        data.recurrence_id = this.state.event.recurrenceId;
+      }
+      // HA 2022.7+ uses target selector instead of entity_id in data
+      await (this.hass as any).callService('calendar', 'delete_event', data, { entity_id: entityId });
+      this.dispatchEvent(new CustomEvent('saved', { detail: { entityId } }));
       this._close();
     } catch (e) {
       console.error('[msc-event-dialog] delete error', e);

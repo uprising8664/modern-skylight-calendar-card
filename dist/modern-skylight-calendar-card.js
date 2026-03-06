@@ -2893,7 +2893,6 @@ let EventDialog = class extends i$3 {
       endDt = `${this._endDate}T${this._endTime}:00`;
     }
     const data = {
-      entity_id: entityId,
       summary: this._title.trim(),
       description: this._description || void 0,
       location: this._location || void 0,
@@ -2908,9 +2907,9 @@ let EventDialog = class extends i$3 {
         if (this.state.event.recurringEventId) {
           data.recurrence_id = this.state.event.recurrenceId;
         }
-        await this.hass.callService("calendar", "update_event", data);
+        await this.hass.callService("calendar", "update_event", data, { entity_id: entityId });
       } else {
-        await this.hass.callService("calendar", "create_event", data);
+        await this.hass.callService("calendar", "create_event", data, { entity_id: entityId });
       }
       this.dispatchEvent(new CustomEvent("saved", { detail: { entityId } }));
       this._close();
@@ -2924,12 +2923,15 @@ let EventDialog = class extends i$3 {
     if (!this.state.event) return;
     this._deleting = true;
     try {
-      await this.hass.callService("calendar", "delete_event", {
-        entity_id: this.state.event.entityId,
-        uid: this.state.event.uid,
-        recurrence_id: this.state.event.recurrenceId
-      });
-      this.dispatchEvent(new CustomEvent("saved", { detail: { entityId: this.state.event.entityId } }));
+      const entityId = this.state.event.entityId;
+      const data = {
+        uid: this.state.event.uid
+      };
+      if (this.state.event.recurrenceId) {
+        data.recurrence_id = this.state.event.recurrenceId;
+      }
+      await this.hass.callService("calendar", "delete_event", data, { entity_id: entityId });
+      this.dispatchEvent(new CustomEvent("saved", { detail: { entityId } }));
       this._close();
     } catch (e2) {
       console.error("[msc-event-dialog] delete error", e2);
