@@ -1,10 +1,11 @@
 import { LitElement, html, nothing } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { safeCustomElement } from '../utils/safe-custom-element.js';
 import { baseStyles } from '../styles/index.js';
 import type { HomeAssistant, ResolvedEntityConfig, EventDialogState } from '../types/index.js';
 import { dayjs } from '../utils/index.js';
 
-@customElement('msc-event-dialog')
+@safeCustomElement('msc-event-dialog')
 export class EventDialog extends LitElement {
   static styles = [baseStyles];
 

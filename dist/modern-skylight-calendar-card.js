@@ -1,4 +1,4 @@
-const t$4 = globalThis, e$3 = t$4.ShadowRoot && (void 0 === t$4.ShadyCSS || t$4.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, s$3 = /* @__PURE__ */ Symbol(), o$5 = /* @__PURE__ */ new WeakMap();
+const t$3 = globalThis, e$3 = t$3.ShadowRoot && (void 0 === t$3.ShadyCSS || t$3.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, s$3 = /* @__PURE__ */ Symbol(), o$5 = /* @__PURE__ */ new WeakMap();
 let n$4 = class n {
   constructor(t2, e2, o2) {
     if (this._$cssResult$ = true, o2 !== s$3) throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
@@ -27,7 +27,7 @@ const r$4 = (t2) => new n$4("string" == typeof t2 ? t2 : t2 + "", void 0, s$3), 
 }, S$1 = (s2, o2) => {
   if (e$3) s2.adoptedStyleSheets = o2.map((t2) => t2 instanceof CSSStyleSheet ? t2 : t2.styleSheet);
   else for (const e2 of o2) {
-    const o3 = document.createElement("style"), n3 = t$4.litNonce;
+    const o3 = document.createElement("style"), n3 = t$3.litNonce;
     void 0 !== n3 && o3.setAttribute("nonce", n3), o3.textContent = e2.cssText, s2.appendChild(o3);
   }
 }, c$3 = e$3 ? (t2) => t2 : (t2) => t2 instanceof CSSStyleSheet ? ((t3) => {
@@ -247,7 +247,7 @@ let y$1 = class y extends HTMLElement {
   }
 };
 y$1.elementStyles = [], y$1.shadowRootOptions = { mode: "open" }, y$1[d$1("elementProperties")] = /* @__PURE__ */ new Map(), y$1[d$1("finalized")] = /* @__PURE__ */ new Map(), p$2?.({ ReactiveElement: y$1 }), (a$1.reactiveElementVersions ?? (a$1.reactiveElementVersions = [])).push("2.1.2");
-const t$3 = globalThis, i$4 = (t2) => t2, s$2 = t$3.trustedTypes, e$1 = s$2 ? s$2.createPolicy("lit-html", { createHTML: (t2) => t2 }) : void 0, h$1 = "$lit$", o$3 = `lit$${Math.random().toFixed(9).slice(2)}$`, n$2 = "?" + o$3, r$2 = `<${n$2}>`, l = document, c$1 = () => l.createComment(""), a = (t2) => null === t2 || "object" != typeof t2 && "function" != typeof t2, u$2 = Array.isArray, d = (t2) => u$2(t2) || "function" == typeof t2?.[Symbol.iterator], f = "[ 	\n\f\r]", v$1 = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, _ = /-->/g, m$1 = />/g, p$1 = RegExp(`>|${f}(?:([^\\s"'>=/]+)(${f}*=${f}*(?:[^ 	
+const t$2 = globalThis, i$4 = (t2) => t2, s$2 = t$2.trustedTypes, e$1 = s$2 ? s$2.createPolicy("lit-html", { createHTML: (t2) => t2 }) : void 0, h$1 = "$lit$", o$3 = `lit$${Math.random().toFixed(9).slice(2)}$`, n$2 = "?" + o$3, r$2 = `<${n$2}>`, l = document, c$1 = () => l.createComment(""), a = (t2) => null === t2 || "object" != typeof t2 && "function" != typeof t2, u$2 = Array.isArray, d = (t2) => u$2(t2) || "function" == typeof t2?.[Symbol.iterator], f = "[ 	\n\f\r]", v$1 = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, _ = /-->/g, m$1 = />/g, p$1 = RegExp(`>|${f}(?:([^\\s"'>=/]+)(${f}*=${f}*(?:[^ 	
 \f\r"'\`<>=]|("|')|))|$)`, "g"), g = /'/g, $ = /"/g, y2 = /^(?:script|style|textarea|title)$/i, x = (t2) => (i4, ...s2) => ({ _$litType$: t2, strings: i4, values: s2 }), b = x(1), E = /* @__PURE__ */ Symbol.for("lit-noChange"), A = /* @__PURE__ */ Symbol.for("lit-nothing"), C = /* @__PURE__ */ new WeakMap(), P = l.createTreeWalker(l, 129);
 function V(t2, i4) {
   if (!u$2(t2) || !t2.hasOwnProperty("raw")) throw Error("invalid template strings array");
@@ -460,8 +460,8 @@ class Z {
     M$1(this, t2);
   }
 }
-const j = { I: k }, B = t$3.litHtmlPolyfillSupport;
-B?.(S, k), (t$3.litHtmlVersions ?? (t$3.litHtmlVersions = [])).push("3.3.2");
+const j = { I: k }, B = t$2.litHtmlPolyfillSupport;
+B?.(S, k), (t$2.litHtmlVersions ?? (t$2.litHtmlVersions = [])).push("3.3.2");
 const D = (t2, i4, s2) => {
   const e2 = s2?.renderBefore ?? i4;
   let h2 = e2._$litPart$;
@@ -499,11 +499,6 @@ i$3._$litElement$ = true, i$3["finalized"] = true, s$1.litElementHydrateSupport?
 const o$2 = s$1.litElementPolyfillSupport;
 o$2?.({ LitElement: i$3 });
 (s$1.litElementVersions ?? (s$1.litElementVersions = [])).push("4.2.2");
-const t$2 = (t2) => (e2, o2) => {
-  void 0 !== o2 ? o2.addInitializer(() => {
-    customElements.define(t2, e2);
-  }) : customElements.define(t2, e2);
-};
 const o$1 = { attribute: true, type: String, converter: u$3, reflect: false, hasChanged: f$1 }, r$1 = (t2 = o$1, e2, r2) => {
   const { kind: n3, metadata: i4 } = r2;
   let s2 = globalThis.litPropertyMetadata.get(i4);
@@ -2129,6 +2124,17 @@ class CalendarStore {
     this._listeners.forEach((fn) => fn());
   }
 }
+const safeCustomElement = (tagName) => (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ((classOrTarget, _context) => {
+    const existing = customElements.get(tagName);
+    if (existing) {
+      return existing;
+    }
+    customElements.define(tagName, classOrTarget);
+    return classOrTarget;
+  })
+);
 const t$1 = { ATTRIBUTE: 1, CHILD: 2 }, e = (t2) => (...e2) => ({ _$litDirective$: t2, values: e2 });
 let i$2 = class i2 {
   constructor(t2) {
@@ -2398,7 +2404,7 @@ __decorateClass$4([
   n$1({ attribute: false })
 ], MonthView.prototype, "hiddenCalendars", 2);
 MonthView = __decorateClass$4([
-  t$2("msc-month-view")
+  safeCustomElement("msc-month-view")
 ], MonthView);
 const n2 = "important", i3 = " !" + n2, o = e(class extends i$2 {
   constructor(t2) {
@@ -2655,7 +2661,7 @@ __decorateClass$3([
   r()
 ], WeekView.prototype, "_nowMinutes", 2);
 WeekView = __decorateClass$3([
-  t$2("msc-week-view")
+  safeCustomElement("msc-week-view")
 ], WeekView);
 var __defProp$2 = Object.defineProperty;
 var __getOwnPropDesc$2 = Object.getOwnPropertyDescriptor;
@@ -2804,7 +2810,7 @@ __decorateClass$2([
   n$1({ attribute: false })
 ], ListView.prototype, "hiddenCalendars", 2);
 ListView = __decorateClass$2([
-  t$2("msc-list-view")
+  safeCustomElement("msc-list-view")
 ], ListView);
 var __defProp$1 = Object.defineProperty;
 var __getOwnPropDesc$1 = Object.getOwnPropertyDescriptor;
@@ -2894,34 +2900,35 @@ let EventDialog = class extends i$3 {
     }
     try {
       if (isEdit && this.state.event) {
-        const wsPayload = {
-          type: "calendar/event/update",
+        const serviceData = {
           entity_id: entityId,
           uid: this.state.event.uid,
-          event: {
-            summary: this._title.trim(),
-            description: this._description || void 0,
-            location: this._location || void 0,
-            ...this._allDay ? { start: { date: startDt }, end: { date: endDt } } : { start: { dateTime: startDt }, end: { dateTime: endDt } }
-          }
+          summary: this._title.trim(),
+          description: this._description || void 0,
+          location: this._location || void 0,
+          start_date_time: this._allDay ? void 0 : startDt,
+          end_date_time: this._allDay ? void 0 : endDt,
+          start_date: this._allDay ? startDt : void 0,
+          end_date: this._allDay ? endDt : void 0
         };
-        if (this.state.event.recurrenceId) wsPayload.recurrence_id = this.state.event.recurrenceId;
+        if (this.state.event.recurrenceId) serviceData.recurrence_id = this.state.event.recurrenceId;
         try {
-          await this.hass.connection.sendMessagePromise(wsPayload);
-        } catch {
-          const data = {
+          const wsPayload = {
+            type: "calendar/event/update",
             entity_id: entityId,
             uid: this.state.event.uid,
-            summary: this._title.trim(),
-            description: this._description || void 0,
-            location: this._location || void 0,
-            start_date_time: this._allDay ? void 0 : startDt,
-            end_date_time: this._allDay ? void 0 : endDt,
-            start_date: this._allDay ? startDt : void 0,
-            end_date: this._allDay ? endDt : void 0
+            event: {
+              summary: this._title.trim(),
+              dtstart: startDt,
+              dtend: endDt,
+              ...this._description ? { description: this._description } : {},
+              ...this._location ? { location: this._location } : {}
+            }
           };
-          if (this.state.event.recurrenceId) data.recurrence_id = this.state.event.recurrenceId;
-          await this.hass.callService("calendar", "update_event", data);
+          if (this.state.event.recurrenceId) wsPayload.recurrence_id = this.state.event.recurrenceId;
+          await this.hass.connection.sendMessagePromise(wsPayload);
+        } catch {
+          await this.hass.callService("calendar", "update_event", serviceData);
         }
       } else {
         const wsPayload = {
@@ -3142,7 +3149,7 @@ __decorateClass$1([
   r()
 ], EventDialog.prototype, "_deleting", 2);
 EventDialog = __decorateClass$1([
-  t$2("msc-event-dialog")
+  safeCustomElement("msc-event-dialog")
 ], EventDialog);
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -3470,7 +3477,7 @@ __decorateClass([
   r()
 ], ModernSkylightCalendarCard.prototype, "_dialog", 2);
 ModernSkylightCalendarCard = __decorateClass([
-  t$2("modern-skylight-calendar-card")
+  safeCustomElement("modern-skylight-calendar-card")
 ], ModernSkylightCalendarCard);
 window.customCards = window.customCards || [];
 window.customCards.push({

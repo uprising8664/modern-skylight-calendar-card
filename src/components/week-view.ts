@@ -1,5 +1,6 @@
 import { LitElement, html, nothing } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { safeCustomElement } from '../utils/safe-custom-element.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { baseStyles } from '../styles/index.js';
@@ -22,7 +23,7 @@ const HOUR_HEIGHT_PX = 48; // matches CSS .week-hour-row height
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-@customElement('msc-week-view')
+@safeCustomElement('msc-week-view')
 export class WeekView extends LitElement {
   static styles = [baseStyles];
 

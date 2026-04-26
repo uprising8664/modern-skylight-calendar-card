@@ -1,5 +1,6 @@
 import { LitElement, html, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
+import { safeCustomElement } from '../utils/safe-custom-element.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { baseStyles } from '../styles/index.js';
 import type { CalendarEvent, CardConfig } from '../types/index.js';
@@ -16,7 +17,7 @@ interface DayCell {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-@customElement('msc-month-view')
+@safeCustomElement('msc-month-view')
 export class MonthView extends LitElement {
   static styles = [baseStyles];
 

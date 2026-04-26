@@ -15,11 +15,12 @@
  */
 
 import { LitElement, html, nothing } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 
 import { baseStyles } from './styles/index.js';
 import { CalendarStore } from './store.js';
 import { dayjs, type Dayjs, loadPreference, savePreference } from './utils/index.js';
+import { safeCustomElement } from './utils/safe-custom-element.js';
 
 import type {
   HomeAssistant,
@@ -38,7 +39,7 @@ import './components/event-dialog.js';
 
 // ─── Card ─────────────────────────────────────────────────────────────────────
 
-@customElement('modern-skylight-calendar-card')
+@safeCustomElement('modern-skylight-calendar-card')
 export class ModernSkylightCalendarCard extends LitElement {
   static styles = [baseStyles];
 
