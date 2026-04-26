@@ -97,39 +97,37 @@ export class EventDialog extends LitElement {
 
     try {
       if (isEdit && this.state.event) {
-        // Try WebSocket API first (works for Google Calendar)
-        const wsPayload: Record<string, unknown> = {
-          type: 'calendar/event/update',
+        const serviceData: Record<string, unknown> = {
           entity_id: entityId,
           uid: this.state.event.uid,
-          event: {
-            summary: this._title.trim(),
-            description: this._description || undefined,
-            location: this._location || undefined,
-            ...(this._allDay
-              ? { start: { date: startDt }, end: { date: endDt } }
-              : { start: { dateTime: startDt }, end: { dateTime: endDt } }),
-          },
+          summary: this._title.trim(),
+          description: this._description || undefined,
+          location: this._location || undefined,
+          start_date_time: this._allDay ? undefined : startDt,
+          end_date_time: this._allDay ? undefined : endDt,
+          start_date: this._allDay ? startDt : undefined,
+          end_date: this._allDay ? endDt : undefined,
         };
-        if (this.state.event.recurrenceId) wsPayload.recurrence_id = this.state.event.recurrenceId;
+        if (this.state.event.recurrenceId) serviceData.recurrence_id = this.state.event.recurrenceId;
 
+        // Try WebSocket first (dtstart/dtend format), fall back to callService
         try {
-          await this.hass.connection.sendMessagePromise(wsPayload);
-        } catch {
-          // Fallback to service call
-          const data: Record<string, unknown> = {
+          const wsPayload: Record<string, unknown> = {
+            type: 'calendar/event/update',
             entity_id: entityId,
             uid: this.state.event.uid,
-            summary: this._title.trim(),
-            description: this._description || undefined,
-            location: this._location || undefined,
-            start_date_time: this._allDay ? undefined : startDt,
-            end_date_time: this._allDay ? undefined : endDt,
-            start_date: this._allDay ? startDt : undefined,
-            end_date: this._allDay ? endDt : undefined,
+            event: {
+              summary: this._title.trim(),
+              dtstart: startDt,
+              dtend: endDt,
+              ...(this._description ? { description: this._description } : {}),
+              ...(this._location ? { location: this._location } : {}),
+            },
           };
-          if (this.state.event.recurrenceId) data.recurrence_id = this.state.event.recurrenceId;
-          await this.hass.callService('calendar', 'update_event', data);
+          if (this.state.event.recurrenceId) wsPayload.recurrence_id = this.state.event.recurrenceId;
+          await this.hass.connection.sendMessagePromise(wsPayload);
+        } catch {
+          await this.hass.callService('calendar', 'update_event', serviceData);
         }
       } else {
         // Try WebSocket API first
